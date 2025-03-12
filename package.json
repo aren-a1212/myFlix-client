@@ -1,0 +1,19 @@
+{
+  "name": "myflix-client",
+  "version": "1.0.0",
+  "description": "",
+  "homepage": "https://github.com/aren-a1212/myFlix-client#readme",
+  "bugs": {
+    "url": "https://github.com/aren-a1212/myFlix-client/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aren-a1212/myFlix-client.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
