@@ -44,9 +44,9 @@ export const Mainview = () => {
             {movies.map((movie) => {
                 return (
                     <MovieCard
-                        key={movie.id} // Added key prop for better performance in lists
+                        key={movie.id} 
                         movie={movie}
-                        onMovieClick={() => setSelectedMovie(movie)} // Corrected the callback and passed the selected movie directly
+                        onMovieClick={() => setSelectedMovie(movie)} 
                     />
                 );
             })}
