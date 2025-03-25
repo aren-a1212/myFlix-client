@@ -8,12 +8,17 @@ export const Mainview = () => {
         fetch("https://movies-fix-b2e97731bf8c.herokuapp.com/movies")
         .then((response) => response.json())
         .then((data) => {
-          const moviesFromApi = data.map((movie) => ({
-            id: movie._id,
-            title: movie.title,
-            description: movie.description,
-            director: movie.director,
-            genre: movie.genre,
+            const moviesFromApi = data.map((movie) => ({
+                id: movie._id,
+                title: movie.title,
+                description: movie.genre.description,
+                director: movie.director.name,
+                directorBio: movie.director.bio ,
+                genre: movie.genre.name,
+                releaseYear: movie.releaseYear,
+                duration: movie.durationMinutes,
+                rating: movie.rating,
+                cast: movie.cast?.map(actor => `${actor.name} as ${actor.role}`)
                 }));
                 setMovies(moviesFromApi);
                 console.log("Movies set in state:", moviesFromApi);
@@ -32,6 +37,7 @@ export const Mainview = () => {
     }
     return (
         <div>
+            <h1>Movies</h1>
             {movies.map((movie) => {
                 return (
                     <MovieCard

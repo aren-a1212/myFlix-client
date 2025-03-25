@@ -7,6 +7,11 @@
             <p><strong>Genre:</strong> {movie.genre}</p>
             <p><strong>Director:</strong> {movie.director}</p>
             <p><strong>Release Year:</strong> {movie.releaseYear}</p>
+            <ul>
+    {movie.cast.map((actorString, index) => (
+        <li key={index}>{actorString}</li>
+    ))}
+</ul>
             <button onClick={onBackClick}>Back</button>
         </div>
     );
