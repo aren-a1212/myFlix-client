@@ -6,19 +6,17 @@ export const Mainview = () => {
     const [movies, setMovies] = useState([]);
     useEffect(() => {
         fetch("https://movies-fix-b2e97731bf8c.herokuapp.com/movies")
-            .then((response) => response.json())
-            .then((data) => {
-                if (!data || !data.movies) {
-                    console.error("Unexpected API response:", data);
-                    return;
-                }
-                const moviesFromApi = data.movies.map((movie) => ({
-                    id: movie._id,
-                    title: movie.title,
-                    genre: movie.genre,
-                    director: movie.director
+        .then((response) => response.json())
+        .then((data) => {
+          const moviesFromApi = data.map((movie) => ({
+            id: movie._id,
+            title: movie.title,
+            description: movie.description,
+            director: movie.director,
+            genre: movie.genre,
                 }));
                 setMovies(moviesFromApi);
+                console.log("Movies set in state:", moviesFromApi);
             })
             .catch((error) => console.error("Error fetching movies:", error));
     }, []);
