@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { MovieCard } from "./movie-card/movie-card";
+import { MovieCard } from "../movie-view/movie.view";
 import { MovieView } from "../movie-view/movie.view";
 import { useState, useEffect } from "react";
 export const Mainview = () => {
@@ -8,20 +8,22 @@ export const Mainview = () => {
         fetch("https://movies-fix-b2e97731bf8c.herokuapp.com/movies")
         .then((response) => response.json())
         .then((data) => {
+            console.log("Raw API data:", data);
             const moviesFromApi = data.map((movie) => ({
                 id: movie._id,
                 title: movie.title,
-                description: movie.genre.description,
-                director: movie.director.name,
-                directorBio: movie.director.bio ,
-                genre: movie.genre.name,
+                posterImage: movie.posterImage,
+                directorName: movie.director.name,
+                director: movie.director, 
+                genreName: movie.genre.name,
+                genre: movie.genre,
                 releaseYear: movie.releaseYear,
                 duration: movie.durationMinutes,
                 rating: movie.rating,
                 cast: movie.cast?.map(actor => `${actor.name} as ${actor.role}`)
                 }));
+                console.log("Transformed movies:", moviesFromApi);
                 setMovies(moviesFromApi);
-                console.log("Movies set in state:", moviesFromApi);
             })
             .catch((error) => console.error("Error fetching movies:", error));
     }, []);
