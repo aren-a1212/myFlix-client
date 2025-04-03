@@ -6,9 +6,7 @@ export const MovieCard = ({ movie, onMovieClick }) => {
     console.log("MovieCard props:", { movie, onMovieClick });
     
     return (
-        <Card className="h-100" 
-        Button onClick={() => onMovieClick(movie)} 
-        style={{ cursor: "pointer" }}> 
+        <Card className="h-100"> 
             <Card.Body>
                 <Card.Title>{movie.title}</Card.Title>
                 <Card.Text>
@@ -17,6 +15,9 @@ export const MovieCard = ({ movie, onMovieClick }) => {
                     <div>Year: {movie.releaseYear }</div>
                     <div>Rating: {movie.rating }/10</div>
                 </Card.Text>
+              <Button onClick={() => onMovieClick(movie)} 
+        style={{ cursor: "pointer" }} variant="link">
+        </Button>
             </Card.Body>
         </Card>
     );

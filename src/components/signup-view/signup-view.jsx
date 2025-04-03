@@ -94,7 +94,7 @@ const [lastName, setLastName] = useState("");
         First Name:
         </Form.Label>
         <Form.Control
-          type="date"
+          type="text"
           value={firstName}
           onChange={(e) => setFirstName(e.target.value)}
           required
@@ -105,7 +105,7 @@ const [lastName, setLastName] = useState("");
       Last Name:
         </Form.Label>
         <Form.Control
-          type="date"
+          type="text"
           value={lastName}
           onChange={(e) => setLastName(e.target.value)}
           required
