@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
+import { Container, Row, Col, Button } from "react-bootstrap";
 import { MovieCard } from "../movie-view/movie.view";
 import { MovieView } from "../movie-view/movie.view";
 import { LoginView } from "../login-view/login-view";
 import { SignupView } from "../signup-view/signup-view";
+
 
 export const Mainview = () => {
     const storedUser = JSON.parse(localStorage.getItem("user"));
@@ -45,51 +47,64 @@ export const Mainview = () => {
                 console.error("Error fetching movies:", error);
                 setError(error.message);
             });
-    }, [token, storedToken]);
+    }, [token]);
       
-    if (!user) {
         return (
-            <>
-          <LoginView
-            onLoggedIn={(user, token) => {
-              setUser(user);
-              setToken(token);
-              localStorage.setItem("user", JSON.stringify(user));
-                    localStorage.setItem("token", token);
-            }} 
-          />
-          or 
-          <SignupView />
-          </>
-            );
-        };
-    
- 
-    if(selectedMovie){
-        return <MovieView movie={selectedMovie} onBackClick={()=>setSelectedMovie(null)} />;
-    }
-
-    if (movies.length===0){
-        return<div>The List is Empty</div>
-    }
-    return (
-        <div>
-            <button onClick={() => {
-                setUser(null);
-                setToken(null);
-                localStorage.clear();
-            }}>Logout</button>
-            
-            <h1>Movies</h1>
-            {movies.map((movie) => {
-                return (
-                    <MovieCard
-                        key={movie.id} 
-                        movie={movie}
-                        onMovieClick={() => setSelectedMovie(movie)} 
-                    />
-                );
-            })}
-        </div>
-    );
-};
+            <Container fluid>
+                <Row className="justify-content-center">
+                    {!user ? (
+                        <Col md={6}>
+                            <LoginView
+                                onLoggedIn={(user, token) => {
+                                    setUser(user);
+                                    setToken(token);
+                                    localStorage.setItem("user", JSON.stringify(user));
+                                    localStorage.setItem("token", token);
+                                }}
+                            />
+                            <div className="text-center my-3">or</div>
+                            <SignupView />
+                        </Col>
+                    ) : selectedMovie ? (
+                        <Col>
+                            <MovieView 
+                                movie={selectedMovie} 
+                                onBackClick={() => setSelectedMovie(null)} 
+                            />
+                        </Col>
+                    ) : movies.length === 0 ? (
+                        <Col className="text-center">
+                            <div>The list is empty</div>
+                        </Col>
+                    ) : (
+                        <Col>
+                            <div className="d-flex justify-content-end mb-3">
+                                <Button 
+                                    variant="danger"
+                                    onClick={() => {
+                                        setUser(null);
+                                        setToken(null);
+                                        localStorage.clear();
+                                    }}
+                                >
+                                    Logout
+                                </Button>
+                            </div>
+                            
+                            <h1 className="mb-4">Movies</h1>
+                            <Row xs={1} md={2} lg={3} xl={4} className="g-4">
+                                {movies.map((movie) => (
+                                    <Col key={movie.id}>
+                                        <MovieCard
+                                            movie={movie}
+                                            onMovieClick={() => setSelectedMovie(movie)} 
+                                        />
+                                    </Col>
+                                ))}
+                            </Row>
+                        </Col>
+                    )}
+                </Row>
+            </Container>
+        );
+    };

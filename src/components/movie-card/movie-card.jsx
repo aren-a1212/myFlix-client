@@ -1,21 +1,27 @@
-import PropTypes from "prop-types"
-export const MovieCard = ({movie , onMovieClick})=>{
+import PropTypes from "prop-types";
+import { Card } from "react-bootstrap";
+import "./movie-view.scss";
+
+export const MovieCard = ({ movie, onMovieClick }) => {
     console.log("MovieCard props:", { movie, onMovieClick });
-    return(
-        <div
-        onClick={()=>{
-         onMovieClick(movie);
-        }}
-        >
-        
-            <h3>{movie.title}</h3>
-            <p>Genre:{movie.genre.name}</p>
-            <p>Director: {movie.director.name}</p>
-            <p>Year:{movie.releaseYear}</p>
-            <p>Rating: {movie.rating}/10</p>
-            </div>
+    
+    return (
+        <Card className="h-100" 
+        Button onClick={() => onMovieClick(movie)} 
+        style={{ cursor: "pointer" }}> 
+            <Card.Body>
+                <Card.Title>{movie.title}</Card.Title>
+                <Card.Text>
+                    <div>Genre: {movie.genre.name}</div>
+                    <div>Director: {movie.director.name}</div>
+                    <div>Year: {movie.releaseYear }</div>
+                    <div>Rating: {movie.rating }/10</div>
+                </Card.Text>
+            </Card.Body>
+        </Card>
     );
 };
+
 MovieCard.propTypes = {
     movie: PropTypes.shape({
         id: PropTypes.string.isRequired,
