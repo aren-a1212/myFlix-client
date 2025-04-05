@@ -1,9 +1,32 @@
 import PropTypes from "prop-types";
-import { Card } from "react-bootstrap";
+import { Button, Card } from "react-bootstrap";
 import "./movie-view.scss";
+import { Link } from "react-router-dom";
 
-export const MovieCard = ({ movie, onMovieClick }) => {
-    console.log("MovieCard props:", { movie, onMovieClick });
+export const MovieCard = ({ movie, user, token, onUserUpdate }) => {
+    const isFavorite = user?.FavoriteMovies?.includes(movie.id);
+  
+    const toggleFavorite = async () => {
+      try {
+        const method = isFavorite ? "DELETE" : "POST";
+        const endpoint = `https://movies-fix-b2e97731bf8c.herokuapp.com/users/${user.Username}/movies/${movie.id}`;
+        
+        const response = await fetch(endpoint, {
+          method,
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json"
+          }
+        });
+  
+        if (response.ok) {
+          const updatedUser = await response.json();
+          onUserUpdate(updatedUser); // Update user state in parent
+        }
+      } catch (error) {
+        console.error("Error updating favorites:", error);
+      }
+    };
     
     return (
         <Card className="h-100"> 
@@ -15,9 +38,17 @@ export const MovieCard = ({ movie, onMovieClick }) => {
                     <div>Year: {movie.releaseYear }</div>
                     <div>Rating: {movie.rating }/10</div>
                 </Card.Text>
-              <Button onClick={() => onMovieClick(movie)} 
-        style={{ cursor: "pointer" }} variant="link">
-        </Button>
+                <Link to={`movies/${movie.id}`}>
+                details
+                </Link>
+                {user && (
+            <Button
+              variant={isFavorite ? "success" : "outline-secondary"}
+              onClick={toggleFavorite}
+            >
+              {isFavorite ? "★ Favorited" : "☆ Favorite"}
+            </Button>
+          )}
             </Card.Body>
         </Card>
     );
@@ -41,7 +72,10 @@ MovieCard.propTypes = {
             })
         )
     }).isRequired,
-    onMovieClick: PropTypes.func.isRequired
+    user: PropTypes.object,
+  token: PropTypes.string,
+  onUserUpdate: PropTypes.func.isRequired
 };
+
 
    
