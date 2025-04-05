@@ -1,8 +1,38 @@
- export const MovieView = ({ movie, onBackClick }) => {
+import { useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { Button } from "react-bootstrap";
+import PropTypes from "prop-types";
+export const MovieView = ({ movies, user, token, onUserUpdate  }) => {
+    const {movieId} = useParams();
+    const movie = movies.find((m)=>m.id===movieId);
     console.log('Current movie object:', JSON.stringify(movie, null, 2));
+    const isFavorite = user?.FavoriteMovies?.includes(movieId);
+
+  const toggleFavorite = async () => {
+    try {
+      const method = isFavorite ? "DELETE" : "POST";
+      const endpoint = `https://movies-fix-b2e97731bf8c.herokuapp.com/users/${user.Username}/movies/${movieId}`;
+      
+      const response = await fetch(endpoint, {
+        method,
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json"
+        }
+      });
+
+      if (response.ok) {
+        const updatedUser = await response.json();
+        onUserUpdate(updatedUser);
+      }
+    } catch (error) {
+      console.error("Error updating favorites:", error);
+    }
+  };
+
     return (
         <div>
-            <img src={movie.posterImage} alt={movie.title} width="200" />
+          
             {movie.genre && (
       <p>
         <strong>Genre:</strong> 
@@ -24,25 +54,32 @@
         <li key={index}>{actorString}</li>
     ))}
 </ul>
-            <button onClick={onBackClick}>Back</button>
-        </div>
+          <Link to={`/`}>
+            <Button variant="link">Back</Button>
+            </Link>
+        
+            {user && (
+        <Button
+          variant={isFavorite ? "danger" : "outline-primary"}
+          onClick={toggleFavorite}
+        >
+          {isFavorite ? "Remove Favorite" : "Add Favorite"}
+        </Button>
+      )}
+          </div>
     );
 };
-import PropTypes from "prop-types"
-export const MovieCard = ({movie , onMovieClick})=>{
+
+export const MovieCard = ({movie})=>{
     return(
-        <div
-        onClick={()=>{
-         onMovieClick(movie);
-        }}
-        >
-        
+        <Link to={`/movies/${movie.id}`} >
             <h3>{movie.title}</h3>
             <p>Genre:{movie.genre.name}</p>
             <p>Director: {movie.director.name}</p>
             <p>Year:{movie.releaseYear}</p>
             <p>Rating: {movie.rating}/10</p>
-            </div>
+            </Link>
+            
     );
 };
 MovieView.propTypes = {
@@ -69,7 +106,9 @@ MovieView.propTypes = {
             })
         )
     }).isRequired,
-    onBackClick: PropTypes.func.isRequired
+    user: PropTypes.object,
+  token: PropTypes.string,
+  onUserUpdate: PropTypes.func.isRequired
 };
 
    

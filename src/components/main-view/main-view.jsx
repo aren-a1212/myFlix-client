@@ -4,7 +4,9 @@ import { MovieCard } from "../movie-view/movie.view";
 import { MovieView } from "../movie-view/movie.view";
 import { LoginView } from "../login-view/login-view";
 import { SignupView } from "../signup-view/signup-view";
-
+import { ProfileView } from "../profile-view/profile-view";
+import { BrowserRouter, Route, Routes, Navigate,Link } from "react-router-dom";
+import { NavigationBar } from "../navigation-bar/navigation-bar";
 
 export const Mainview = () => {
   const storedUser = JSON.parse(localStorage.getItem("user"));
@@ -13,7 +15,6 @@ export const Mainview = () => {
   const [user, setUser] = useState(storedUser || null);
   const [token, setToken] = useState(storedToken || null);
   const [password, setPassword] = useState(null);
-  const [selectedMovie, setSelectedMovie] = useState(null);
 
   useEffect(() => {
     if (!token) return;
@@ -50,61 +51,127 @@ export const Mainview = () => {
   }, [token]);
 
   return (
-    <Container fluid>
-      <Row className="justify-content-center">
-        {!user ? (
-          <Col md={4}>
-            <LoginView
-              onLoggedIn={(user, token) => {
-                setUser(user);
-                setToken(token);
-                localStorage.setItem("user", JSON.stringify(user));
-                localStorage.setItem("token", token);
-              }}
-            />
-            <div className="text-center my-3">or</div>
-            <SignupView />
-          </Col>
-        ) : selectedMovie ? (
-          <Col>
-            <MovieView
-              movie={selectedMovie}
-              onBackClick={() => setSelectedMovie(null)}
-            />
-          </Col>
-        ) : movies.length === 0 ? (
-          <Col className="text-center">
-            <div>The list is empty</div>
-          </Col>
-        ) : (
-          <Col>
-            <div className="d-flex justify-content-end mb-3">
-              <Button
-                variant="danger"
-                onClick={() => {
-                  setUser(null);
-                  setToken(null);
-                  localStorage.clear();
-                }}
-              >
-                Logout
-              </Button>
-            </div>
-
-            <h1 className="mb-4">Movies</h1>
-            <Row xs={1} md={2} lg={3} xl={4} className="g-4">
-              {movies.map((movie) => (
-                <Col key={movie.id}>
-                  <MovieCard
-                    movie={movie}
-                    onMovieClick={() => setSelectedMovie(movie)}
-                  />
-                </Col>
-              ))}
-            </Row>
-          </Col>
-        )}
-      </Row>
-    </Container>
+    <BrowserRouter>
+    <NavigationBar
+    user={user}
+    onLoggedOut={()=>{
+      setUser(null);
+    }}
+    />
+      <Container>
+        <Routes>
+        <Route
+    path="/profile"
+    element={
+      !user ? ( 
+        <Navigate to="/login" replace />
+      ) : (
+        <ProfileView 
+          user={user} 
+          token={token} 
+          movies={movies}
+          onUpdateUser={(updatedUser) => {
+            setUser(updatedUser);
+            localStorage.setItem('user', JSON.stringify(updatedUser));
+          }}
+          onLogout={() => {
+            setUser(null);
+            setToken(null);
+            localStorage.clear();
+          }}
+        />
+      )
+    }
+  />
+          <Route
+            path="/signup"
+            element={
+              user ? (
+                <Navigate to="/" replace />
+              ) : (
+                <Row className="justify-content-center">
+                  <Col md={5}>
+                    <SignupView />
+                  </Col>
+                </Row>
+              )
+            }
+          />
+          
+          <Route
+            path="/login"
+            element={
+              user ? (
+                <Navigate to="/" replace />
+              ) : (
+                <Row className="justify-content-center">
+                  <Col md={4}>
+                    <LoginView
+                      onLoggedIn={(user, token) => {
+                        setUser(user);
+                        setToken(token);
+                        localStorage.setItem("user", JSON.stringify(user));
+                        localStorage.setItem("token", token);
+                      }}
+                    />
+                  </Col>
+                </Row>
+              )
+            }
+          />
+          
+          <Route
+            path="/movies/:movieId"
+            element={
+              !user ? (
+                <Navigate to="/login" replace />
+              ) : movies.length === 0 ? (
+                <Row className="justify-content-center">
+                  <Col className="text-center">
+                    <div>The list is empty</div>
+                  </Col>
+                </Row>
+              ) : (
+                <Row className="justify-content-center">
+                  <Col md={8}>
+                    <MovieView movies={movies} 
+                    user={user} 
+                    token={token} 
+                    onUserUpdate={(updatedUser) => {
+                      setUser(updatedUser);
+                      localStorage.setItem('user', JSON.stringify(updatedUser));
+                    }} 
+                    />
+                  </Col>
+                </Row>
+              )
+            }
+          />
+          
+          <Route
+            path="/"
+            element={
+              !user ? (
+                <Navigate to="/login" replace />
+              ) : movies.length === 0 ? (
+                <Row className="justify-content-center">
+                  <Col className="text-center">
+                    <div>The list is empty</div>
+                  </Col>
+                </Row>
+              ) : (
+                <Row>
+                  {movies.map((movie) => (
+                    <Col className="mb-4" key={movie.id} md={3}>
+                      <MovieCard movie={movie} />
+                    </Col>
+                  ))}
+                </Row>
+              )
+            }
+          />
+        </Routes>
+      </Container>
+    </BrowserRouter>
   );
 };
