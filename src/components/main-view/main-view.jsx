@@ -12,9 +12,13 @@ export const Mainview = () => {
   const storedUser = JSON.parse(localStorage.getItem("user"));
   const storedToken = localStorage.getItem("token");
   const [movies, setMovies] = useState([]);
-  const [user, setUser] = useState(storedUser || null);
   const [token, setToken] = useState(storedToken || null);
   const [password, setPassword] = useState(null);
+  const [user, setUser] = useState(() => {
+    const savedUser = localStorage.getItem('user');
+    return savedUser ? JSON.parse(savedUser) : null;
+  });
+  
 
   useEffect(() => {
     if (!token) return;
@@ -163,7 +167,15 @@ export const Mainview = () => {
                 <Row>
                   {movies.map((movie) => (
                     <Col className="mb-4" key={movie.id} md={3}>
-                      <MovieCard movie={movie} />
+                      <MovieCard
+                       movie={movie}
+                       ser={user}
+                            token={token}
+                            onUserUpdate={(updatedUser) => {
+                                setUser(updatedUser);
+                                localStorage.setItem('user', JSON.stringify(updatedUser));
+                            }}
+                       />
                     </Col>
                   ))}
                 </Row>

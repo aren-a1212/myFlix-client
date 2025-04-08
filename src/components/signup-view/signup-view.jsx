@@ -8,7 +8,7 @@ export const SignupView = ({}) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
-  const [birthday, setBirthday] = useState("");
+  const [Birthday, setBirthday] = useState("");
   const [firstName, setFirstName] = useState("");
 const [lastName, setLastName] = useState("");
 
@@ -20,7 +20,7 @@ const [lastName, setLastName] = useState("");
         username: username,
         password: password,
         email: email,
-        Birthday: birthday
+        Birthday: Birthday
     };
     fetch("https://movies-fix-b2e97731bf8c.herokuapp.com/users", {
         method:"POST",
@@ -83,7 +83,7 @@ const [lastName, setLastName] = useState("");
         </Form.Label>
         <Form.Control
           type="date"
-          value={birthday}
+          value={Birthday}
           onChange={(e) => setBirthday(e.target.value)}
           required
         />

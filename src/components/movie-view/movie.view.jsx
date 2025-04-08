@@ -6,12 +6,12 @@ export const MovieView = ({ movies, user, token, onUserUpdate  }) => {
     const {movieId} = useParams();
     const movie = movies.find((m)=>m.id===movieId);
     console.log('Current movie object:', JSON.stringify(movie, null, 2));
-    const isFavorite = user?.FavoriteMovies?.includes(movieId);
+    const isFavorite = user?.favoriteMovies?.includes(movieId);
 
   const toggleFavorite = async () => {
     try {
       const method = isFavorite ? "DELETE" : "POST";
-      const endpoint = `https://movies-fix-b2e97731bf8c.herokuapp.com/users/${user.Username}/movies/${movieId}`;
+      const endpoint = `https://movies-fix-b2e97731bf8c.herokuapp.com/users/${user.username}/${movieId}`;
       
       const response = await fetch(endpoint, {
         method,

@@ -4,13 +4,22 @@ import "./movie-view.scss";
 import { Link } from "react-router-dom";
 
 export const MovieCard = ({ movie, user, token, onUserUpdate }) => {
-    const isFavorite = user?.FavoriteMovies?.includes(movie.id);
+    const isFavorite = user?.favoriteMovies?.includes(movie.id);
   
     const toggleFavorite = async () => {
+      // Add null checks for user and username
+      if (!user || !user.username) {
+        console.error("User data is missing");
+        alert("Please log in again");
+        return;
+      }
+    
+      setIsProcessing(true);
       try {
         const method = isFavorite ? "DELETE" : "POST";
-        const endpoint = `https://movies-fix-b2e97731bf8c.herokuapp.com/users/${user.Username}/movies/${movie.id}`;
-        
+        // Use the endpoint format from your backend
+        `https://movies-fix-b2e97731bf8c.herokuapp.com/users/${user.username}/${movie.id}`;
+        console.log("Attempting API call to:", endpoint);
         const response = await fetch(endpoint, {
           method,
           headers: {
@@ -18,16 +27,21 @@ export const MovieCard = ({ movie, user, token, onUserUpdate }) => {
             "Content-Type": "application/json"
           }
         });
-  
-        if (response.ok) {
-          const updatedUser = await response.json();
-          onUserUpdate(updatedUser); // Update user state in parent
-        }
-      } catch (error) {
-        console.error("Error updating favorites:", error);
-      }
-    };
     
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || "Operation failed");
+      }
+
+      const updatedUser = await response.json();
+      onUserUpdate(updatedUser);
+  } catch (error) {
+      console.error("Favorite error:", error);
+      alert(error.message);
+  } finally {
+      setIsProcessing(false);
+  }
+};
     return (
         <Card className="h-100"> 
             <Card.Body>
@@ -45,8 +59,9 @@ export const MovieCard = ({ movie, user, token, onUserUpdate }) => {
             <Button
               variant={isFavorite ? "success" : "outline-secondary"}
               onClick={toggleFavorite}
+              disabled={isProcessing}
             >
-              {isFavorite ? "★ Favorited" : "☆ Favorite"}
+              {isProcessing ? "..." : (isFavorite ? "★ Favorited" : "☆ Favorite")}
             </Button>
           )}
             </Card.Body>

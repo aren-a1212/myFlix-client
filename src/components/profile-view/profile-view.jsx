@@ -3,53 +3,61 @@ import { Button, Card, Form, Row, Col, Modal, ListGroup } from 'react-bootstrap'
 import { Link, useNavigate } from 'react-router-dom';
 
 export const ProfileView = ({ user, token, movies, onUpdateUser, onLogout }) => {
-  const [username, setUsername] = useState(user.Username);
+  const [username, setUsername] = useState(user.username);
   const [password, setPassword] = useState('');
-  const [email, setEmail] = useState(user.Email);
-  const [birthday, setBirthday] = useState(user.Birthday?.split('T')[0] || '');
+  const [email, setEmail] = useState(user.email);
+  const [Birthday, setBirthday] = useState(user.Birthday?.split('T')[0] || '');
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [favoriteMovies, setFavoriteMovies] = useState([]);
   const navigate = useNavigate(); // hook to navigate programmatically
 
   // Get favorite movies whenever user or movies change
   useEffect(() => {
-    if (user?.FavoriteMovies && movies) {
-      const favoriteMovies = movies.filter(m => user.FavoriteMovies.includes(m.id));
+    if (user?.favoriteMovies && movies) {
+      const favoriteMovies = movies.filter(m => user.favoriteMovies.includes(m.id));
       setFavoriteMovies(favoriteMovies);
     }
   }, [user, movies]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => { 
     e.preventDefault();
     
     const data = {
-      Username: username,
-      Password: password,
-      Email: email,
-      Birthday: birthday
+      username: username,
+      email: email,
+      Birthday: Birthday
     };
+    if (password.trim()) {
+      data.password = password;
+  }
+    try {
+      const response = await fetch(`https://movies-fix-b2e97731bf8c.herokuapp.com/users/${user.username}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(data)
+      });
+  
 
-    fetch(`https://movies-fix-b2e97731bf8c.herokuapp.com/users/${user.Username}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify(data)
-    })
-    .then(response => response.json())
-    .then(updatedUser => {
+      
+      if (!response.ok) {
+        const errorData = await response.json();  // Attempt to parse error message from response body
+        throw new Error(errorData.message || 'Update failed');
+      }
+      const updatedUser = await response.json();
+
       onUpdateUser(updatedUser);
+      setPassword('');
       alert('Profile updated successfully!');
-    })
-    .catch(error => {
-      console.error('Error updating user:', error);
-      alert('Failed to update profile');
-    });
+    } catch (error) {
+      console.error('Update error:', error);
+      alert(`Update failed: ${error.message}`);
+    }
   };
-
   const handleDelete = () => {
-    fetch(`https://movies-fix-b2e97731bf8c.herokuapp.com/users/${user.Username}`, {
+    fetch(`https://movies-fix-b2e97731bf8c.herokuapp.com/users/${user.username}`, {
       method: 'DELETE',
       headers: {
         'Authorization': `Bearer ${token}`
@@ -58,8 +66,8 @@ export const ProfileView = ({ user, token, movies, onUpdateUser, onLogout }) => 
     .then(response => {
       if (response.ok) {
         alert('Account deleted successfully');
-        onLogout();  // Handle logout, possibly by clearing session, tokens, etc.
-        navigate('/');  // Redirect user to home page after logout
+        onLogout();  
+        navigate('/');  
       }
     })
     .catch(error => {
@@ -68,7 +76,7 @@ export const ProfileView = ({ user, token, movies, onUpdateUser, onLogout }) => 
   };
 
   const removeFavorite = (movieId) => {
-    fetch(`https://movies-fix-b2e97731bf8c.herokuapp.com/users/${user.Username}/movies/${movieId}`, {
+    fetch(`https://movies-fix-b2e97731bf8c.herokuapp.com/users/${user.username}/${movieId}`, {
       method: 'DELETE',
       headers: {
         'Authorization': `Bearer ${token}`
@@ -125,7 +133,7 @@ export const ProfileView = ({ user, token, movies, onUpdateUser, onLogout }) => 
                 <Form.Label>Birthday</Form.Label>
                 <Form.Control
                   type="date"
-                  value={birthday}
+                  value={Birthday}
                   onChange={(e) => setBirthday(e.target.value)}
                 />
               </Form.Group>
