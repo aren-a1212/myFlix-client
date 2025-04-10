@@ -30,7 +30,7 @@ export const ProfileView = ({ user, token, movies, onUpdateUser, onLogout }) => 
     if (password.trim()) {
       data.password = password;
  } else {
-    data.password = user.password; 
+    data.password = password; 
  }
     try {
       const response = await fetch(`https://movies-fix-b2e97731bf8c.herokuapp.com/users/${user.username}`, {
