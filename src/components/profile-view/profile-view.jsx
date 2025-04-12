@@ -5,6 +5,7 @@ import { Link, useNavigate } from 'react-router-dom';
 export const ProfileView = ({ user, token, movies, onUpdateUser, onLogout }) => {
   const [username, setUsername] = useState(user.username);
   const [password, setPassword] = useState('');
+  const [passwordConfirmation, setPasswordConfirmation] = useState('');
   const [email, setEmail] = useState(user.email);
   const [Birthday, setBirthday] = useState(user.Birthday?.split('T')[0] || '');
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -25,13 +26,25 @@ export const ProfileView = ({ user, token, movies, onUpdateUser, onLogout }) => 
     const data = {
       username: username,
       email: email,
-      Birthday: Birthday
+      Birthday: Birthday,
+      password: password || user.password
     };
-    if (password.trim()) {
-      data.password = password;
- } else {
-    data.password = password; 
- }
+    //if (password.trim()) {
+     // data.password = password;
+// } else {
+   // data.password = password; 
+ //}
+ //if (password.trim()) {
+ // if (password !== passwordConfirmation) {
+    //alert('Password and confirmation do not match!');
+  //  return;
+ // }
+ // data.password = password;
+//}
+if (password) {
+  data.password = password;
+}
+
     try {
       const response = await fetch(`https://movies-fix-b2e97731bf8c.herokuapp.com/users/${user.username}`, {
         method: 'PUT',
@@ -110,16 +123,18 @@ export const ProfileView = ({ user, token, movies, onUpdateUser, onLogout }) => 
                   required
                 />
               </Form.Group>
-
               <Form.Group controlId="password" className="mb-3">
-                <Form.Label>Password</Form.Label>
-                <Form.Control
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Leave blank to keep current password"
-                />
-              </Form.Group>
+  <Form.Label>New Password (leave blank to keep current)</Form.Label>
+  <Form.Control
+    type="password"
+    value={password}
+    onChange={(e) => setPassword(e.target.value)}
+  />
+</Form.Group>
+
+               
+
+
 
               <Form.Group controlId="email" className="mb-3">
                 <Form.Label>Email</Form.Label>
