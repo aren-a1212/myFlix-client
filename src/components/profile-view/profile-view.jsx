@@ -22,30 +22,27 @@ export const ProfileView = ({ user, token, movies, onUpdateUser, onLogout }) => 
 
   const handleSubmit = async (e) => { 
     e.preventDefault();
-    
+    if (password && password !== passwordConfirmation) {
+      alert('Password and confirmation do not match!');
+      return;
+    }
+  
+   
     const data = {
       username: username,
       email: email,
       Birthday: Birthday,
-      password: password || user.password
+      firstName: user.firstName, 
+      lastName: user.lastName 
     };
-    //if (password.trim()) {
-     // data.password = password;
-// } else {
-   // data.password = password; 
- //}
- //if (password.trim()) {
- // if (password !== passwordConfirmation) {
-    //alert('Password and confirmation do not match!');
-  //  return;
- // }
- // data.password = password;
-//}
-if (password) {
-  data.password = password;
-}
-
-    try {
+    if (password.trim()) {
+      data.password = password.trim();
+    }
+  
+      console.log('🚀 FINAL payload about to be sent:', data);
+       
+        
+     try {
       const response = await fetch(`https://movies-fix-b2e97731bf8c.herokuapp.com/users/${user.username}`, {
         method: 'PUT',
         headers: {
@@ -55,16 +52,24 @@ if (password) {
         body: JSON.stringify(data)
       });
   
+      console.log('Raw response:', response);
 
-      
-      if (!response.ok) {
-        const errorData = await response.json();  // Attempt to parse error message from response body
-        throw new Error(errorData.message || 'Update failed');
+      let responseData;
+      try {
+        responseData = await response.json();
+        console.log('Parsed response data:', responseData);
+      } catch (jsonError) {
+        console.error('JSON parsing error:', jsonError);
+        throw new Error('Invalid JSON in response');
       }
-      const updatedUser = await response.json();
-
-      onUpdateUser(updatedUser);
+      if (!response.ok) {
+        throw new Error(responseData.message || 'Update failed');
+      }
+  
+     
       setPassword('');
+      setPasswordConfirmation('');
+      onUpdateUser(responseData);
       alert('Profile updated successfully!');
     } catch (error) {
       console.error('Update error:', error);
@@ -128,10 +133,21 @@ if (password) {
   <Form.Control
     type="password"
     value={password}
-    onChange={(e) => setPassword(e.target.value)}
+    onChange={(e) =>{
+      console.log('🟡 Password field changed to:', e.target.value);
+       setPassword(e.target.value)}}
   />
 </Form.Group>
 
+<Form.Group controlId="passwordConfirmation" className="mb-3">
+  <Form.Label>Confirm New Password</Form.Label>
+  <Form.Control
+    type="password"
+    value={passwordConfirmation}
+    onChange={(e) => setPasswordConfirmation(e.target.value)}
+    disabled={!password}
+  />
+</Form.Group>
                
 
 
