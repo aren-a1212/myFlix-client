@@ -1,16 +1,32 @@
 import { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
+import { useNavigate } from "react-router-dom";
 
 
 
 export const SignupView = ({ }) => {
+  const navigate = useNavigate();
+  const [errors, setErrors] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const [Birthday, setBirthday] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    username: "",
+    password: "",
+    email: "",
+    Birthday: "",
+  });
+  const handleChange = (event) => {
+    const {name, value} = event.target;
+    setFormData({...formData,[name]: value});
+  };
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -27,16 +43,29 @@ export const SignupView = ({ }) => {
       body: JSON.stringify(data),
       headers: {
         "Content-Type": "application/json"
-      }
-    }).then((response) => {
-      if (response.ok) {
-        alert("Signup successful");
-        window.location.reload();
+      },
+    })
+    .then((response) => response.json())
+    .then((responseData) => {
+      if (responseData.errors) {
+        setErrors(responseData.errors);
       } else {
-        alert("Signup failer");
+        alert("Signup successful");
+        setTimeout(() => {
+          setIsLoading(false);
+          navigate("/login"); 
+        });
+        
       }
+    })
+    .catch((error) => {
+      console.error("Error during signup:", error);
+      setErrors([{ msg: "An unexpected error occurred. Please try again." }]);
+    })
+    .finally(() => {
+      setIsLoading(false);
     });
-  };
+};
 
   return (
     <Form className="signup-view" onSubmit={handleSubmit}>
