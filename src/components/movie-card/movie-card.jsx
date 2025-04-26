@@ -3,9 +3,12 @@ import { Button, Card } from "react-bootstrap";
 import "./movie-view.scss";
 import { Link } from "react-router-dom";
 
-export const MovieCard = ({ movie, user, token, onUserUpdate }) => {
+export const MovieCard = ({ movie, user, token, genres=[], directors=[], onUserUpdate }) => {
+
+  const matchedGenre = genres.find((g) => g._id === movie.genre);
+  const matchedDirector = directors.find((d) => d._id === movie.director);
     const isFavorite = user?.favoriteMovies?.includes(movie.id);
-  
+
     const toggleFavorite = async () => {
       // Add null checks for user and username
       if (!user || !user.username) {
@@ -43,7 +46,13 @@ export const MovieCard = ({ movie, user, token, onUserUpdate }) => {
   }
 };
     return (
-        <Card className="h-100"> 
+      <Card className="h-100 movie-card">
+      <Card.Img
+        variant="top"
+        src={movie.posterImage || "https://via.placeholder.com/300x450?text=No+Image"}
+        alt={`${movie.title} poster`}
+      />
+
             <Card.Body>
                 <Card.Title>{movie.title}</Card.Title>
                 <Card.Text>

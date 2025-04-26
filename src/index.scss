@@ -1,6 +1,262 @@
 @import '~bootstrap/scss/bootstrap.scss';
 $color: steelblue;
+$primary:   #1e3a8a;   // deep blue
+$secondary: #fbbf24;   // warm yellow
+$light:     #f3f4f6;   // off-white background
+$text:      #374151;   // dark gray for body copy
+
+// Spacing Scale
+$space-xs: 4px;
+$space-sm: 8px;
+$space-md: 16px;
+$space-lg: 24px;
+$space-xl: 32px;
+
+
+$font-sans: 'Helvetica Neue', Arial, sans-serif;
+$font-base: 16px;
+
 
 .my-flix {
   color: $color;
+}
+
+
+.login-view,
+.signup-view {
+  /* full-bleed gradient behind the form */
+  background: linear-gradient(
+    135deg,
+    lighten($primary, 10%), 
+    lighten($secondary, 10%)
+  );
+  color: white;
+  padding: $space-lg 2rem;        // give it some breathing room
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+
+  /* Make inputs stand out on the gradient */
+  .form-control {
+    background: white;
+    color: $text;
+  }
+
+  /* Headings and buttons */
+  h2 {
+    color: white;
+  }
+  .btn-primary {
+    background-color: white;
+    color: $primary;
+    &:hover {
+      background-color: lighten($light, 5%);
+    }
+  }
+}
+
+/*--------------------------------------------------------------
+# Main View (Movie Grid + Filter)
+--------------------------------------------------------------*/
+
+.main-view {
+  padding: $space-lg 0;
+  background-color: aliceblue;
+
+  .filter-input {
+    max-width: 500px;
+    margin: 0 auto $space-lg;
+
+    input {
+      width: 100%;
+      padding: $space-sm $space-md;
+      border: 2px solid $primary;
+      border-radius: 4px;
+      font-size: 1rem;
+
+      &:focus {
+        outline: none;
+        border-color: $secondary;
+      }
+    }
+  }
+
+  .row {
+    margin: 0 -$space-sm; // reset bootstrap gutters if you like
+  }
+
+  .col-md-3 {
+    padding: 0 $space-sm;
+
+    .movie-card {
+      margin-bottom: $space-lg;
+    }
+  }
+
+  .no-results {
+    text-align: center;
+    color: $secondary;
+    margin-top: $space-lg;
+  }
+}
+
+
+/*--------------------------------------------------------------
+# Profile View
+--------------------------------------------------------------*/
+.profile-view {
+  background: linear-gradient(
+    135deg,
+    lighten($primary, 10%),
+    lighten($secondary, 10%)
+  );
+  color: white;
+  padding: $space-lg;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  max-width: 400px;
+  margin: 0rem auto;
+
+  /* headings */
+  h2 {
+    color: white;
+    text-align: center;
+    margin-bottom: $space-md;
+  }
+
+  /* if you have form-controls in profile (e.g. to edit), style them */
+  .form-control {
+    background: white;
+    color: $text;
+  }
+
+  /* buttons */
+  .btn-primary,
+  .btn {
+    background-color:$secondary;
+    color: $primary;
+    border: none;
+    width: 100%;
+    padding: $space-sm;
+
+    &:hover {
+      background-color: darken(blue, 1%);
+    }
+  }
+}
+
+
+.movie-card {
+  /* white base with a colored top border */
+  background: linear-gradient(
+    180deg,
+    $light 0%,
+    lighten($secondary, 40%) 100%
+  );
+  padding: $space-lg 0;
+
+  border: none;
+  border-radius: 8px;
+  border-top: 4px solid $primary;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 14px rgba(0,0,0,0.15);
+  }
+
+  .card-img-top {
+    height: 250px;
+    object-fit: cover;
+    border-bottom: 2px solid $secondary;
+  }
+
+  .card-body {
+    background: linear-gradient(
+    180deg,
+    $light 0%,
+    lighten($secondary, 40%) 100%
+  );
+  padding: $space-lg 0;
+
+    padding: $space-md;
+    color: $text; 
+
+    .card-title {
+      color:darken($primary, 20%);
+      font-weight: bold;
+    }
+
+    .card-text {
+      color: $text;
+      margin-bottom: $space-sm;
+    }
+
+    .btn {
+      background: $secondary;
+      color: white;
+      width: 100%;
+      margin-top: $space-sm;
+
+      &:hover {
+        background: darken($secondary, 5%);
+      }
+    }
+  }
+}
+
+/*--------------------------------------------------------------
+# Movie Detail View Accent
+--------------------------------------------------------------*/
+.movie-view {
+  /* you already have a two-tone bg—let’s deepen it */
+  background: linear-gradient(
+    180deg,
+    $light 0%,
+    lighten($secondary, 40%) 100%
+  );
+  padding: $space-lg 0;
+
+  .back-button .btn {
+    background: $primary;
+    color: white;
+
+    &:hover {
+      background: darken($primary, 5%);
+    }
+  }
+
+  .detail-grid {
+    background: white;
+    border-radius: 8px;
+    padding: $space-lg;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+
+  /* Headings and metadata */
+  h3, dt {
+    color: $primary;
+    margin-bottom: $space-sm;
+  }
+  p, dd {
+    color: $text;
+    margin-bottom: $space-md;
+  }
+
+  .action-buttons {
+    display: flex;
+    gap: $space-sm;
+    margin-top: $space-lg;
+
+    .btn {
+      flex: 1;
+      background: $secondary;
+      color: white;
+
+      &:hover {
+        background: darken($secondary, 5%);
+      }
+    }
+  }
 }

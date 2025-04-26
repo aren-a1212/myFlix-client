@@ -39,7 +39,7 @@ const [lastName, setLastName] = useState("");
   };
 
   return (
-    <Form onSubmit={handleSubmit}>
+    <Form className="signup-view" onSubmit={handleSubmit}>
       <Form.Group controlId="formUsername">
       <Form.Label>
         Username:

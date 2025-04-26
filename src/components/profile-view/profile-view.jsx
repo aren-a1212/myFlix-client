@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Button, Card, Form, Row, Col, Modal, ListGroup } from 'react-bootstrap';
+import { Button, Card, Form, Row, Col, Modal, ListGroup, Container } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 
 export const ProfileView = ({ user, token, movies, onUpdateUser, onLogout }) => {
@@ -112,6 +112,7 @@ export const ProfileView = ({ user, token, movies, onUpdateUser, onLogout }) => 
   };
 
   return (
+    <Container className="profile-view">
     <Row className="justify-content-center mt-4">
       <Col md={8}>
         {/* Profile Information Card */}
@@ -230,5 +231,6 @@ export const ProfileView = ({ user, token, movies, onUpdateUser, onLogout }) => 
         </Modal.Footer>
       </Modal>
     </Row>
+    </Container>
   );
 }; 

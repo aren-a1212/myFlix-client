@@ -18,25 +18,65 @@ export const Mainview = () => {
     const savedUser = localStorage.getItem('user');
     return savedUser ? JSON.parse(savedUser) : null;
   });
-  
+  const [genres, setGenres] = useState([]);
+  const [directors, setDirectors] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const filteredMovies = movies.filter((movie) => {
+    const searchTerm = searchQuery.toLowerCase();
+    return (
+      movie.title.toLowerCase().includes(searchTerm) ||
+      (movie.genreName && movie.genreName.toLowerCase().includes(searchTerm)) ||
+      (movie.directorName && movie.directorName.toLowerCase().includes(searchTerm))
+    );
+  });
 
   useEffect(() => {
     if (!token) return;
 
-    fetch("https://movies-fix-b2e97731bf8c.herokuapp.com/movies", {
-      headers: { Authorization: `Bearer ${token}` }
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Failed to fetch movies");
-        }
-        return response.json();
-      })
-      .then((data) => {
-        const moviesFromApi = data.map((movie) => ({
+    const fetchPoster = async (title) => {
+      const apiKey = 'c1ed012d'; // replace this with YOUR real OMDb API key
+      try {
+        const response = await fetch(`https://www.omdbapi.com/?t=${encodeURIComponent(title)}&apikey=${apiKey}`);
+        const data = await response.json();
+        return data.Poster !== "N/A" ? data.Poster : "https://via.placeholder.com/300x450?text=No+Image";
+      } catch (error) {
+        console.error("Error fetching poster for", title, error);
+        return "https://via.placeholder.com/300x450?text=No+Image"; // fallback
+      }
+    };
+
+    const fetchAllData = async () => {
+      try {
+        // Fetch movies, directors, and genres in parallel
+        const [moviesRes, directorsRes, genresRes] = await Promise.all([
+          fetch("https://movies-fix-b2e97731bf8c.herokuapp.com/movies", {
+            headers: { Authorization: `Bearer ${token}` }
+          }),
+          fetch("https://movies-fix-b2e97731bf8c.herokuapp.com/movies/directors", {
+            headers: { Authorization: `Bearer ${token}` }
+          }),
+          fetch("https://movies-fix-b2e97731bf8c.herokuapp.com/movies/genres", {
+            headers: { Authorization: `Bearer ${token}` }
+          })
+        ]);
+  
+        // Handle movies response
+        if (!moviesRes.ok) throw new Error('Movies fetch failed');
+        const moviesData = await moviesRes.json();
+        
+        // Handle directors response
+        if (!directorsRes.ok) throw new Error('Directors fetch failed');
+        const directorsData = await directorsRes.json();
+  
+        // Handle genres response
+        if (!genresRes.ok) throw new Error('Genres fetch failed');
+        const genresData = await genresRes.json();
+        const  moviesFromApi = await Promise.all(moviesData.map(async(movie) => {
+         const posterImage = movie.posterImage || await fetchPoster(movie.title);
+          return {
           id: movie._id,
           title: movie.title,
-          posterImage: movie.posterImage,
+          posterImage,
           directorName: movie.director?.name,
           director: movie.director,
           genreName: movie.genre?.name,
@@ -45,24 +85,33 @@ export const Mainview = () => {
           duration: movie.durationMinutes,
           rating: movie.rating,
           cast: movie.cast?.map(actor => `${actor.name} as ${actor.role}`)
-        }));
+        };}));
         setMovies(moviesFromApi);
-      })
-      .catch((error) => {
-        console.error("Error fetching movies:", error);
-        setError(error.message);
-      });
+        setDirectors(directorsData);
+        setGenres(genresData);
+     
+        localStorage.setItem("movies", JSON.stringify(moviesFromApi)); // Store movies in local storage
+      } catch (error) {
+        console.error("Fetching movies failed:", error);
+        setMovies([]);
+        setDirectors([]);
+        setGenres([])
+      }
+    };
+      fetchAllData();
   }, [token]);
 
   return (
     <BrowserRouter>
     <NavigationBar
     user={user}
+    searchQuery={searchQuery}
+      setSearchQuery={setSearchQuery}
     onLoggedOut={()=>{
       setUser(null);
     }}
     />
-      <Container>
+      <Container className="main-view">
         <Routes>
         <Route
     path="/profile"
@@ -139,6 +188,8 @@ export const Mainview = () => {
                 <Row className="justify-content-center">
                   <Col md={8}>
                     <MovieView movies={movies} 
+                    genres={genres}
+                    directors={directors}
                     user={user} 
                     token={token} 
                     onUserUpdate={(updatedUser) => {
@@ -165,11 +216,13 @@ export const Mainview = () => {
                 </Row>
               ) : (
                 <Row>
-                  {movies.map((movie) => (
+                  {filteredMovies.map((movie) => (
                     <Col className="mb-4" key={movie.id} md={3}>
                       <MovieCard
                        movie={movie}
-                       ser={user}
+                       genres={genres}
+                       directors={directors}
+                       user={user}
                             token={token}
                             onUserUpdate={(updatedUser) => {
                                 setUser(updatedUser);
