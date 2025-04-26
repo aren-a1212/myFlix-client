@@ -5,7 +5,7 @@ import { MovieView } from "../movie-view/movie.view";
 import { LoginView } from "../login-view/login-view";
 import { SignupView } from "../signup-view/signup-view";
 import { ProfileView } from "../profile-view/profile-view";
-import { BrowserRouter, Route, Routes, Navigate,Link } from "react-router-dom";
+import { BrowserRouter, Route, Routes, Navigate, Link } from "react-router-dom";
 import { NavigationBar } from "../navigation-bar/navigation-bar";
 
 export const Mainview = () => {
@@ -59,37 +59,38 @@ export const Mainview = () => {
             headers: { Authorization: `Bearer ${token}` }
           })
         ]);
-  
+
         // Handle movies response
         if (!moviesRes.ok) throw new Error('Movies fetch failed');
         const moviesData = await moviesRes.json();
-        
+
         // Handle directors response
         if (!directorsRes.ok) throw new Error('Directors fetch failed');
         const directorsData = await directorsRes.json();
-  
+
         // Handle genres response
         if (!genresRes.ok) throw new Error('Genres fetch failed');
         const genresData = await genresRes.json();
-        const  moviesFromApi = await Promise.all(moviesData.map(async(movie) => {
-         const posterImage = movie.posterImage || await fetchPoster(movie.title);
+        const moviesFromApi = await Promise.all(moviesData.map(async (movie) => {
+          const posterImage = movie.posterImage || await fetchPoster(movie.title);
           return {
-          id: movie._id,
-          title: movie.title,
-          posterImage,
-          directorName: movie.director?.name,
-          director: movie.director,
-          genreName: movie.genre?.name,
-          genre: movie.genre,
-          releaseYear: movie.releaseYear,
-          duration: movie.durationMinutes,
-          rating: movie.rating,
-          cast: movie.cast?.map(actor => `${actor.name} as ${actor.role}`)
-        };}));
+            id: movie._id,
+            title: movie.title,
+            posterImage,
+            directorName: movie.director?.name,
+            director: movie.director,
+            genreName: movie.genre?.name,
+            genre: movie.genre,
+            releaseYear: movie.releaseYear,
+            duration: movie.durationMinutes,
+            rating: movie.rating,
+            cast: movie.cast?.map(actor => `${actor.name} as ${actor.role}`)
+          };
+        }));
         setMovies(moviesFromApi);
         setDirectors(directorsData);
         setGenres(genresData);
-     
+
         localStorage.setItem("movies", JSON.stringify(moviesFromApi)); // Store movies in local storage
       } catch (error) {
         console.error("Fetching movies failed:", error);
@@ -98,44 +99,44 @@ export const Mainview = () => {
         setGenres([])
       }
     };
-      fetchAllData();
+    fetchAllData();
   }, [token]);
 
   return (
     <BrowserRouter>
-    <NavigationBar
-    user={user}
-    searchQuery={searchQuery}
-      setSearchQuery={setSearchQuery}
-    onLoggedOut={()=>{
-      setUser(null);
-    }}
-    />
+      <NavigationBar
+        user={user}
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+        onLoggedOut={() => {
+          setUser(null);
+        }}
+      />
       <Container className="main-view">
         <Routes>
-        <Route
-    path="/profile"
-    element={
-      !user ? ( 
-        <Navigate to="/login" replace />
-      ) : (
-        <ProfileView 
-          user={user} 
-          token={token} 
-          movies={movies}
-          onUpdateUser={(updatedUser) => {
-            setUser(updatedUser);
-            localStorage.setItem('user', JSON.stringify(updatedUser));
-          }}
-          onLogout={() => {
-            setUser(null);
-            setToken(null);
-            localStorage.clear();
-          }}
-        />
-      )
-    }
-  />
+          <Route
+            path="/profile"
+            element={
+              !user ? (
+                <Navigate to="/login" replace />
+              ) : (
+                <ProfileView
+                  user={user}
+                  token={token}
+                  movies={movies}
+                  onUpdateUser={(updatedUser) => {
+                    setUser(updatedUser);
+                    localStorage.setItem('user', JSON.stringify(updatedUser));
+                  }}
+                  onLogout={() => {
+                    setUser(null);
+                    setToken(null);
+                    localStorage.clear();
+                  }}
+                />
+              )
+            }
+          />
           <Route
             path="/signup"
             element={
@@ -150,7 +151,7 @@ export const Mainview = () => {
               )
             }
           />
-          
+
           <Route
             path="/login"
             element={
@@ -172,7 +173,7 @@ export const Mainview = () => {
               )
             }
           />
-          
+
           <Route
             path="/movies/:movieId"
             element={
@@ -187,22 +188,22 @@ export const Mainview = () => {
               ) : (
                 <Row className="justify-content-center">
                   <Col md={8}>
-                    <MovieView movies={movies} 
-                    genres={genres}
-                    directors={directors}
-                    user={user} 
-                    token={token} 
-                    onUserUpdate={(updatedUser) => {
-                      setUser(updatedUser);
-                      localStorage.setItem('user', JSON.stringify(updatedUser));
-                    }} 
+                    <MovieView movies={movies}
+                      genres={genres}
+                      directors={directors}
+                      user={user}
+                      token={token}
+                      onUserUpdate={(updatedUser) => {
+                        setUser(updatedUser);
+                        localStorage.setItem('user', JSON.stringify(updatedUser));
+                      }}
                     />
                   </Col>
                 </Row>
               )
             }
           />
-          
+
           <Route
             path="/"
             element={
@@ -219,16 +220,16 @@ export const Mainview = () => {
                   {filteredMovies.map((movie) => (
                     <Col className="mb-4" key={movie.id} md={3}>
                       <MovieCard
-                       movie={movie}
-                       genres={genres}
-                       directors={directors}
-                       user={user}
-                            token={token}
-                            onUserUpdate={(updatedUser) => {
-                                setUser(updatedUser);
-                                localStorage.setItem('user', JSON.stringify(updatedUser));
-                            }}
-                       />
+                        movie={movie}
+                        genres={genres}
+                        directors={directors}
+                        user={user}
+                        token={token}
+                        onUserUpdate={(updatedUser) => {
+                          setUser(updatedUser);
+                          localStorage.setItem('user', JSON.stringify(updatedUser));
+                        }}
+                      />
                     </Col>
                   ))}
                 </Row>

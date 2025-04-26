@@ -4,26 +4,26 @@ import { useEffect, useState } from "react";
 
 export const NavigationBar = ({ user, onLoggedOut, searchQuery, setSearchQuery }) => {
   const navigate = useNavigate();
-  const location = useLocation(); 
+  const location = useLocation();
   const [showSearch, setShowSearch] = useState(location.pathname === "/");
 
   useEffect(() => {
-    
+
     setShowSearch(location.pathname === "/");
   }, [location.pathname]);
 
 
   const handleLogout = () => {
     localStorage.removeItem("user");
-  localStorage.removeItem("token");
-  
-    // Clear session data (e.g., remove token, user data)
+    localStorage.removeItem("token");
+
+
     onLoggedOut();
 
-    // Redirect user to the home page after logout
-    localStorage.removeItem("token"); // Assuming token is stored in localStorage
-    localStorage.removeItem("username"); // If you store the username
-    navigate("/"); // Navigate to home page
+
+    localStorage.removeItem("token");
+    localStorage.removeItem("username");
+    navigate("/");
   };
 
   return (

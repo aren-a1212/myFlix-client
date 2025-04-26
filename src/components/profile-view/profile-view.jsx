@@ -20,29 +20,29 @@ export const ProfileView = ({ user, token, movies, onUpdateUser, onLogout }) => 
     }
   }, [user, movies]);
 
-  const handleSubmit = async (e) => { 
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (password && password !== passwordConfirmation) {
       alert('Password and confirmation do not match!');
       return;
     }
-  
-   
+
+
     const data = {
       username: username,
       email: email,
       Birthday: Birthday,
-      firstName: user.firstName, 
-      lastName: user.lastName 
+      firstName: user.firstName,
+      lastName: user.lastName
     };
     if (password.trim()) {
       data.password = password.trim();
     }
-  
-      console.log('🚀 FINAL payload about to be sent:', data);
-       
-        
-     try {
+
+    console.log('🚀 FINAL payload about to be sent:', data);
+
+
+    try {
       const response = await fetch(`https://movies-fix-b2e97731bf8c.herokuapp.com/users/${user.username}`, {
         method: 'PUT',
         headers: {
@@ -51,7 +51,7 @@ export const ProfileView = ({ user, token, movies, onUpdateUser, onLogout }) => 
         },
         body: JSON.stringify(data)
       });
-  
+
       console.log('Raw response:', response);
 
       let responseData;
@@ -65,8 +65,8 @@ export const ProfileView = ({ user, token, movies, onUpdateUser, onLogout }) => 
       if (!response.ok) {
         throw new Error(responseData.message || 'Update failed');
       }
-  
-     
+
+
       setPassword('');
       setPasswordConfirmation('');
       onUpdateUser(responseData);
@@ -83,16 +83,16 @@ export const ProfileView = ({ user, token, movies, onUpdateUser, onLogout }) => 
         'Authorization': `Bearer ${token}`
       }
     })
-    .then(response => {
-      if (response.ok) {
-        alert('Account deleted successfully');
-        onLogout();  
-        navigate('/');  
-      }
-    })
-    .catch(error => {
-      console.error('Error deleting user:', error);
-    });
+      .then(response => {
+        if (response.ok) {
+          alert('Account deleted successfully');
+          onLogout();
+          navigate('/');
+        }
+      })
+      .catch(error => {
+        console.error('Error deleting user:', error);
+      });
   };
 
   const removeFavorite = (movieId) => {
@@ -102,135 +102,136 @@ export const ProfileView = ({ user, token, movies, onUpdateUser, onLogout }) => 
         'Authorization': `Bearer ${token}`
       }
     })
-    .then(response => response.json())
-    .then(updatedUser => {
-      onUpdateUser(updatedUser);
-    })
-    .catch(error => {
-      console.error('Error removing favorite:', error);
-    });
+      .then(response => response.json())
+      .then(updatedUser => {
+        onUpdateUser(updatedUser);
+      })
+      .catch(error => {
+        console.error('Error removing favorite:', error);
+      });
   };
 
   return (
     <Container className="profile-view">
-    <Row className="justify-content-center mt-4">
-      <Col md={8}>
-        {/* Profile Information Card */}
-        <Card className="mb-4">
-          <Card.Header as="h4">Profile Information</Card.Header>
-          <Card.Body>
-            <Form onSubmit={handleSubmit}>
-              <Form.Group controlId="username" className="mb-3">
-                <Form.Label>Username</Form.Label>
-                <Form.Control
-                  type="text"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  required
-                />
-              </Form.Group>
-              <Form.Group controlId="password" className="mb-3">
-  <Form.Label>New Password (leave blank to keep current)</Form.Label>
-  <Form.Control
-    type="password"
-    value={password}
-    onChange={(e) =>{
-      console.log('🟡 Password field changed to:', e.target.value);
-       setPassword(e.target.value)}}
-  />
-</Form.Group>
+      <Row className="justify-content-center mt-4">
+        <Col md={8}>
+          {/* Profile Information Card */}
+          <Card className="mb-4">
+            <Card.Header as="h4">Profile Information</Card.Header>
+            <Card.Body>
+              <Form onSubmit={handleSubmit}>
+                <Form.Group controlId="username" className="mb-3">
+                  <Form.Label>Username</Form.Label>
+                  <Form.Control
+                    type="text"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    required
+                  />
+                </Form.Group>
+                <Form.Group controlId="password" className="mb-3">
+                  <Form.Label>New Password (leave blank to keep current)</Form.Label>
+                  <Form.Control
+                    type="password"
+                    value={password}
+                    onChange={(e) => {
+                      console.log('🟡 Password field changed to:', e.target.value);
+                      setPassword(e.target.value)
+                    }}
+                  />
+                </Form.Group>
 
-<Form.Group controlId="passwordConfirmation" className="mb-3">
-  <Form.Label>Confirm New Password</Form.Label>
-  <Form.Control
-    type="password"
-    value={passwordConfirmation}
-    onChange={(e) => setPasswordConfirmation(e.target.value)}
-    disabled={!password}
-  />
-</Form.Group>
-               
+                <Form.Group controlId="passwordConfirmation" className="mb-3">
+                  <Form.Label>Confirm New Password</Form.Label>
+                  <Form.Control
+                    type="password"
+                    value={passwordConfirmation}
+                    onChange={(e) => setPasswordConfirmation(e.target.value)}
+                    disabled={!password}
+                  />
+                </Form.Group>
 
 
 
-              <Form.Group controlId="email" className="mb-3">
-                <Form.Label>Email</Form.Label>
-                <Form.Control
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                />
-              </Form.Group>
 
-              <Form.Group controlId="birthday" className="mb-3">
-                <Form.Label>Birthday</Form.Label>
-                <Form.Control
-                  type="date"
-                  value={Birthday}
-                  onChange={(e) => setBirthday(e.target.value)}
-                />
-              </Form.Group>
+                <Form.Group controlId="email" className="mb-3">
+                  <Form.Label>Email</Form.Label>
+                  <Form.Control
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                  />
+                </Form.Group>
 
-              <div className="d-flex gap-2">
-                <Button variant="primary" type="submit">
-                  Update Profile
-                </Button>
-                <Button 
-                  variant="danger" 
-                  onClick={() => setShowDeleteModal(true)}
-                >
-                  Delete Account
-                </Button>
-              </div>
-            </Form>
-          </Card.Body>
-        </Card>
+                <Form.Group controlId="birthday" className="mb-3">
+                  <Form.Label>Birthday</Form.Label>
+                  <Form.Control
+                    type="date"
+                    value={Birthday}
+                    onChange={(e) => setBirthday(e.target.value)}
+                  />
+                </Form.Group>
 
-        {/* Favorite Movies Card */}
-        <Card>
-          <Card.Header as="h4">Favorite Movies</Card.Header>
-          <Card.Body>
-            {favoriteMovies.length > 0 ? (
-              <ListGroup variant="flush">
-                {favoriteMovies.map(movie => (
-                  <ListGroup.Item key={movie.id} className="d-flex justify-content-between align-items-center">
-                    <Link to={`/movies/${movie.id}`}>{movie.title}</Link>
-                    <Button 
-                      variant="outline-danger"
-                      size="sm"
-                      onClick={() => removeFavorite(movie.id)}
-                    >
-                      Remove
-                    </Button>
-                  </ListGroup.Item>
-                ))}
-              </ListGroup>
-            ) : (
-              <p>You haven't added any favorite movies yet.</p>
-            )}
-          </Card.Body>
-        </Card>
-      </Col>
+                <div className="d-flex gap-2">
+                  <Button variant="primary" type="submit">
+                    Update Profile
+                  </Button>
+                  <Button
+                    variant="danger"
+                    onClick={() => setShowDeleteModal(true)}
+                  >
+                    Delete Account
+                  </Button>
+                </div>
+              </Form>
+            </Card.Body>
+          </Card>
 
-      {/* Delete Confirmation Modal */}
-      <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)}>
-        <Modal.Header closeButton>
-          <Modal.Title>Confirm Account Deletion</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          Are you sure you want to delete your account? This action cannot be undone.
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
-            Cancel
-          </Button>
-          <Button variant="danger" onClick={handleDelete}>
-            Delete Account
-          </Button>
-        </Modal.Footer>
-      </Modal>
-    </Row>
+          {/* Favorite Movies Card */}
+          <Card>
+            <Card.Header as="h4">Favorite Movies</Card.Header>
+            <Card.Body>
+              {favoriteMovies.length > 0 ? (
+                <ListGroup variant="flush">
+                  {favoriteMovies.map(movie => (
+                    <ListGroup.Item key={movie.id} className="d-flex justify-content-between align-items-center">
+                      <Link to={`/movies/${movie.id}`}>{movie.title}</Link>
+                      <Button
+                        variant="outline-danger"
+                        size="sm"
+                        onClick={() => removeFavorite(movie.id)}
+                      >
+                        Remove
+                      </Button>
+                    </ListGroup.Item>
+                  ))}
+                </ListGroup>
+              ) : (
+                <p>You haven't added any favorite movies yet.</p>
+              )}
+            </Card.Body>
+          </Card>
+        </Col>
+
+        {/* Delete Confirmation Modal */}
+        <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)}>
+          <Modal.Header closeButton>
+            <Modal.Title>Confirm Account Deletion</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            Are you sure you want to delete your account? This action cannot be undone.
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
+              Cancel
+            </Button>
+            <Button variant="danger" onClick={handleDelete}>
+              Delete Account
+            </Button>
+          </Modal.Footer>
+        </Modal>
+      </Row>
     </Container>
   );
 }; 

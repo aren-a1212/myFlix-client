@@ -1,62 +1,69 @@
-@import '~bootstrap/scss/bootstrap.scss';
-$color: steelblue;
-$primary:   #1e3a8a;   // deep blue
-$secondary: #fbbf24;   // warm yellow
-$light:     #f3f4f6;   // off-white background
-$text:      #374151;   // dark gray for body copy
 
-// Spacing Scale
+@import '~bootstrap/scss/bootstrap.scss';
+
+
+
+
+$color:           steelblue;
+
+
+$primary:         #1e3a8a;  
+$primary-dark:    #172f66; 
+$primary-light:    #2a4bc1;  
+
+// secondary yellows
+$secondary:       #fbbf24;  
+$secondary-light: #fcd34d;   
+$secondary-lighter:#fedc7a; 
+$secondary-hover: #e0a818;  
+
+
+$light:           #f3f4f6;  
+$light-hover:     #f7f8f9;  
+$text:            #374151;   
+
+
 $space-xs: 4px;
 $space-sm: 8px;
 $space-md: 16px;
 $space-lg: 24px;
 $space-xl: 32px;
 
-
 $font-sans: 'Helvetica Neue', Arial, sans-serif;
 $font-base: 16px;
+
 
 
 .my-flix {
   color: $color;
 }
 
-
 .login-view,
 .signup-view {
-  /* full-bleed gradient behind the form */
-  background: linear-gradient(
-    135deg,
-    lighten($primary, 10%), 
-    lighten($secondary, 10%)
-  );
+  background: linear-gradient(135deg, $primary-light, $secondary-light);
   color: white;
-  padding: $space-lg 2rem;        // give it some breathing room
+  padding: $space-lg 2rem;
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 
-  /* Make inputs stand out on the gradient */
   .form-control {
     background: white;
     color: $text;
   }
 
-  /* Headings and buttons */
   h2 {
     color: white;
   }
+
   .btn-primary {
     background-color: white;
     color: $primary;
+
     &:hover {
-      background-color: lighten($light, 5%);
+      background-color: $light-hover;
     }
   }
 }
-
-/*--------------------------------------------------------------
-# Main View (Movie Grid + Filter)
---------------------------------------------------------------*/
 
 .main-view {
   padding: $space-lg 0;
@@ -81,7 +88,7 @@ $font-base: 16px;
   }
 
   .row {
-    margin: 0 -$space-sm; // reset bootstrap gutters if you like
+    margin: 0 -$space-sm;
   }
 
   .col-md-3 {
@@ -99,61 +106,47 @@ $font-base: 16px;
   }
 }
 
-
-/*--------------------------------------------------------------
-# Profile View
---------------------------------------------------------------*/
 .profile-view {
-  background: linear-gradient(
-    135deg,
-    lighten($primary, 10%),
-    lighten($secondary, 10%)
-  );
+  background: linear-gradient(135deg, $primary-light, $secondary-light);
   color: white;
   padding: $space-lg;
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
   max-width: 400px;
-  margin: 0rem auto;
+  margin: 0 auto;
 
-  /* headings */
   h2 {
     color: white;
     text-align: center;
     margin-bottom: $space-md;
   }
 
-  /* if you have form-controls in profile (e.g. to edit), style them */
   .form-control {
     background: white;
     color: $text;
   }
 
-  /* buttons */
   .btn-primary,
   .btn {
-    background-color:$secondary;
+    background-color: $secondary;
     color: $primary;
     border: none;
     width: 100%;
     padding: $space-sm;
 
     &:hover {
-      background-color: darken(blue, 1%);
+      background-color: $secondary-hover;
     }
   }
 }
 
-
 .movie-card {
-  /* white base with a colored top border */
   background: linear-gradient(
     180deg,
     $light 0%,
-    lighten($secondary, 40%) 100%
+    $secondary-lighter 100%
   );
   padding: $space-lg 0;
-
   border: none;
   border-radius: 8px;
   border-top: 4px solid $primary;
@@ -174,17 +167,15 @@ $font-base: 16px;
 
   .card-body {
     background: linear-gradient(
-    180deg,
-    $light 0%,
-    lighten($secondary, 40%) 100%
-  );
-  padding: $space-lg 0;
-
+      180deg,
+      $light 0%,
+      $secondary-lighter 100%
+    );
     padding: $space-md;
-    color: $text; 
+    color: $text;
 
     .card-title {
-      color:darken($primary, 20%);
+      color: $primary-dark;
       font-weight: bold;
     }
 
@@ -200,21 +191,17 @@ $font-base: 16px;
       margin-top: $space-sm;
 
       &:hover {
-        background: darken($secondary, 5%);
+        background: $secondary-hover;
       }
     }
   }
 }
 
-/*--------------------------------------------------------------
-# Movie Detail View Accent
---------------------------------------------------------------*/
 .movie-view {
-  /* you already have a two-tone bg—let’s deepen it */
   background: linear-gradient(
     180deg,
     $light 0%,
-    lighten($secondary, 40%) 100%
+    $secondary-lighter 100%
   );
   padding: $space-lg 0;
 
@@ -223,7 +210,7 @@ $font-base: 16px;
     color: white;
 
     &:hover {
-      background: darken($primary, 5%);
+      background: $primary-dark;
     }
   }
 
@@ -234,11 +221,11 @@ $font-base: 16px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
   }
 
-  /* Headings and metadata */
   h3, dt {
     color: $primary;
     margin-bottom: $space-sm;
   }
+
   p, dd {
     color: $text;
     margin-bottom: $space-md;
@@ -255,7 +242,7 @@ $font-base: 16px;
       color: white;
 
       &:hover {
-        background: darken($secondary, 5%);
+        background: $secondary-hover;
       }
     }
   }

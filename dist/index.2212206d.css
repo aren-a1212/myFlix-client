@@ -7200,7 +7200,7 @@ button:not(:disabled), [type="button"]:not(:disabled), [type="reset"]:not(:disab
 
 .login-view, .signup-view {
   color: #fff;
-  background: linear-gradient(135deg, #274cb4, #fcce56);
+  background: linear-gradient(135deg, #2a4bc1, #fcd34d);
   border-radius: 8px;
   padding: 24px 2rem;
   box-shadow: 0 4px 12px #0000001a;
@@ -7221,7 +7221,7 @@ button:not(:disabled), [type="button"]:not(:disabled), [type="reset"]:not(:disab
 }
 
 .login-view .btn-primary:hover, .signup-view .btn-primary:hover {
-  background-color: #fff;
+  background-color: #f7f8f9;
 }
 
 .main-view {
@@ -7267,7 +7267,7 @@ button:not(:disabled), [type="button"]:not(:disabled), [type="reset"]:not(:disab
 
 .profile-view {
   color: #fff;
-  background: linear-gradient(135deg, #274cb4, #fcce56);
+  background: linear-gradient(135deg, #2a4bc1, #fcd34d);
   border-radius: 8px;
   max-width: 400px;
   margin: 0 auto;
@@ -7295,11 +7295,11 @@ button:not(:disabled), [type="button"]:not(:disabled), [type="reset"]:not(:disab
 }
 
 .profile-view .btn-primary:hover, .profile-view .btn:hover {
-  background-color: #0000fa;
+  background-color: #e0a818;
 }
 
 .movie-card {
-  background: linear-gradient(#f3f4f6 0%, #fffaec 100%);
+  background: linear-gradient(#f3f4f6 0%, #fedc7a 100%);
   border: none;
   border-top: 4px solid #1e3a8a;
   border-radius: 8px;
@@ -7322,12 +7322,12 @@ button:not(:disabled), [type="button"]:not(:disabled), [type="reset"]:not(:disab
 
 .movie-card .card-body {
   color: #374151;
-  background: linear-gradient(#f3f4f6 0%, #fffaec 100%);
+  background: linear-gradient(#f3f4f6 0%, #fedc7a 100%);
   padding: 16px;
 }
 
 .movie-card .card-body .card-title {
-  color: #0c1736;
+  color: #172f66;
   font-weight: bold;
 }
 
@@ -7344,11 +7344,11 @@ button:not(:disabled), [type="button"]:not(:disabled), [type="reset"]:not(:disab
 }
 
 .movie-card .card-body .btn:hover {
-  background: #fbb80b;
+  background: #e0a818;
 }
 
 .movie-view {
-  background: linear-gradient(#f3f4f6 0%, #fffaec 100%);
+  background: linear-gradient(#f3f4f6 0%, #fedc7a 100%);
   padding: 24px 0;
 }
 
@@ -7358,7 +7358,7 @@ button:not(:disabled), [type="button"]:not(:disabled), [type="reset"]:not(:disab
 }
 
 .movie-view .back-button .btn:hover {
-  background: #193175;
+  background: #172f66;
 }
 
 .movie-view .detail-grid {
@@ -7391,7 +7391,7 @@ button:not(:disabled), [type="button"]:not(:disabled), [type="reset"]:not(:disab
 }
 
 .movie-view .action-buttons .btn:hover {
-  background: #fbb80b;
+  background: #e0a818;
 }
 
 :root, [data-bs-theme="light"] {
